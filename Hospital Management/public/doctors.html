@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Doctors</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header>
+    <h1>🏥 CityCare Hospital</h1>
+
+    <nav>
+        <a href="/">Home</a>
+        <a href="doctors.html">Doctors</a>
+        <a href="appointment.html">Book Appointment</a>
+        <a href="appointments.html">Appointments</a>
+    </nav>
+</header>
+
+<div class="container">
+
+    <h2>Our Doctors</h2>
+
+    <div id="doctorList" class="cards"></div>
+
+</div>
+
+<script>
+
+fetch("/api/doctors")
+.then(response => response.json())
+.then(doctors => {
+
+    const doctorList = document.getElementById("doctorList");
+
+    doctors.forEach(doctor => {
+
+        doctorList.innerHTML += `
+            <div class="card">
+                <h3>${doctor.name}</h3>
+                <p><b>Specialization:</b>
+                    ${doctor.specialization}
+                </p>
+
+                <p><b>Experience:</b>
+                    ${doctor.experience}
+                </p>
+
+                <a href="appointment.html">
+                    <button>Book Appointment</button>
+                </a>
+            </div>
+        `;
+    });
+
+});
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Appointments</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header>
+    <h1>🏥 CityCare Hospital</h1>
+
+    <nav>
+        <a href="/">Home</a>
+        <a href="doctors.html">Doctors</a>
+        <a href="appointment.html">Book Appointment</a>
+        <a href="appointments.html">Appointments</a>
+    </nav>
+</header>
+
+<div class="container">
+
+    <h2>Booked Appointments</h2>
+
+    <table>
+
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Patient</th>
+                <th>Doctor</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Reason</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody id="appointmentTable"></tbody>
+
+    </table>
+
+</div>
+
+<script>
+
+function loadAppointments() {
+
+    fetch("/api/appointments")
+
+    .then(response => response.json())
+
+    .then(appointments => {
+
+        const table =
+            document.getElementById("appointmentTable");
+
+        table.innerHTML = "";
+
+        appointments.forEach(appointment => {
+
+            table.innerHTML += `
+
+                <tr>
+
+                    <td>${appointment.id}</td>
+
+                    <td>${appointment.patientName}</td>
+
+                    <td>${appointment.doctorName}</td>
+
+                    <td>${appointment.date}</td>
+
+                    <td>${appointment.time}</td>
+
+                    <td>${appointment.reason}</td>
+
+                    <td>${appointment.status}</td>
+
+                    <td>
+
+                        ${
+                            appointment.status === "Confirmed"
+
+                            ?
+
+                            `<button
+                                onclick="cancelAppointment(${appointment.id})">
+                                Cancel
+                            </button>`
+
+                            :
+
+                            "Cancelled"
+                        }
+
+                    </td>
+
+                </tr>
+
+            `;
+
+        });
+
+    });
+
+}
+
+
+function cancelAppointment(id) {
+
+    fetch(`/api/appointments/${id}`, {
+
+        method: "DELETE"
+
+    })
+
+    .then(response => response.json())
+
+    .then(data => {
+
+        alert(data.message);
+
+        loadAppointments();
+
+    });
+
+}
+
+
+loadAppointments();
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Book Appointment</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header>
+    <h1>🏥 CityCare Hospital</h1>
+
+    <nav>
+        <a href="/">Home</a>
+        <a href="doctors.html">Doctors</a>
+        <a href="appointment.html">Book Appointment</a>
+        <a href="appointments.html">Appointments</a>
+    </nav>
+</header>
+
+<div class="container">
+
+    <h2>Book an Appointment</h2>
+
+    <form id="appointmentForm">
+
+        <label>Patient Name</label>
+        <input type="text" id="patientName" required>
+
+        <label>Age</label>
+        <input type="number" id="age" required>
+
+        <label>Phone Number</label>
+        <input type="tel" id="phone" required>
+
+        <label>Select Doctor</label>
+        <select id="doctorId" required>
+            <option value="">Select Doctor</option>
+        </select>
+
+        <label>Appointment Date</label>
+        <input type="date" id="date" required>
+
+        <label>Appointment Time</label>
+        <input type="time" id="time" required>
+
+        <label>Reason for Visit</label>
+        <textarea id="reason"></textarea>
+
+        <button type="submit">Book Appointment</button>
+
+    </form>
+
+    <p id="message"></p>
+
+</div>
+
+<script>
+
+// Load doctors
+fetch("/api/doctors")
+.then(response => response.json())
+.then(doctors => {
+
+    const doctorSelect = document.getElementById("doctorId");
+
+    doctors.forEach(doctor => {
+
+        doctorSelect.innerHTML += `
+            <option value="${doctor.id}">
+                ${doctor.name} - ${doctor.specialization}
+            </option>
+        `;
+
+    });
+
+});
+
+
+// Submit appointment
+document.getElementById("appointmentForm")
+.addEventListener("submit", function(event) {
+
+    event.preventDefault();
+
+    const appointment = {
+
+        patientName:
+            document.getElementById("patientName").value,
+
+        age:
+            document.getElementById("age").value,
+
+        phone:
+            document.getElementById("phone").value,
+
+        doctorId:
+            document.getElementById("doctorId").value,
+
+        date:
+            document.getElementById("date").value,
+
+        time:
+            document.getElementById("time").value,
+
+        reason:
+            document.getElementById("reason").value
+    };
+
+    fetch("/api/appointments", {
+
+        method: "POST",
+
+        headers: {
+            "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify(appointment)
+
+    })
+
+    .then(response => response.json())
+
+    .then(data => {
+
+        document.getElementById("message").innerText =
+            data.message;
+
+        document.getElementById("appointmentForm").reset();
+
+    });
+
+});
+
+</script>
+
+</body>
+</html>
